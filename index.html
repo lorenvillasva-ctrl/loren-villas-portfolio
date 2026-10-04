@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loren Villas Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{min-height:100vh}
+</style>
+<style>
+/* Layout concept: fixed profile rail on the left, app-like views on the right.
+   Home is a bento of preview cards, one per view. Phone: compact header + bottom dock. */
+:root{
+  --bg:#E9F0F1; --surface:#F6FAFA; --surface-2:#DCE8EA; --fg:#10252E; --muted:#47626C;
+  --accent:#1F3A5E; --pop:#D9871C; --border:#C3D5D9; --contour-rgb:31,58,94;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --radius:18px; --radius-sm:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A171D; --surface:#112229; --surface-2:#18313B; --fg:#E6F0F2; --muted:#93AAB2;
+    --accent:#8CC4E6; --pop:#F0A83A; --border:#26424D; --contour-rgb:120,175,205; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A171D; --surface:#112229; --surface-2:#18313B; --fg:#E6F0F2; --muted:#93AAB2;
+  --accent:#8CC4E6; --pop:#F0A83A; --border:#26424D; --contour-rgb:120,175,205; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.55;margin:0;padding-inline:clamp(16px,3vw,40px);padding-block:24px}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.app{position:relative;z-index:1;max-width:1180px;margin-inline:auto;display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;align-items:start}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--pop);outline-offset:2px}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+.mono{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* Rail */
+.rail{position:sticky;top:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:20px}
+.rail-top{display:flex;flex-direction:column;gap:14px}
+.mono-mark{width:64px;height:64px;border-radius:20px 20px 20px 6px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:1.5rem;letter-spacing:.02em}
+.rail h1{font-size:1.9rem;font-weight:700}
+.role{color:var(--muted);font-size:.95rem}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;background:var(--surface-2);border-radius:999px;padding:6px 12px;width:fit-content}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--pop);flex:none}
+.rail-meta,.rail-contact{display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.rail-contact .row{display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere}
+.theme{margin-top:2px;display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;width:fit-content}
+.theme:hover{border-color:var(--accent)}
+
+/* Nav */
+.main{min-width:0;display:flex;flex-direction:column;gap:20px}
+nav.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px;width:fit-content;max-width:100%;overflow-x:auto}
+nav.tabs button{background:transparent;border:0;border-radius:999px;padding:8px 16px;font-weight:500;color:var(--muted);white-space:nowrap}
+nav.tabs button svg{display:none}
+nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--bg)}
+nav.tabs button:not([aria-current="page"]):hover{color:var(--fg)}
+
+/* Cards and views */
+.view{display:flex;flex-direction:column;gap:16px}
+.view-head{display:flex;flex-direction:column;gap:6px}
+.view-head h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:700}
+.view-head p{color:var(--muted);max-width:60ch}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h3{font-size:1.25rem;font-weight:650}
+.card ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.bento>*{grid-column:span 3}
+.bento>.wide{grid-column:span 6}
+.intro{padding:30px;background:var(--accent);color:var(--bg);border-color:transparent}
+.intro h2{font-size:clamp(1.9rem,4vw,3rem);font-weight:700;max-width:18ch}
+.intro p{max-width:56ch;opacity:.92}
+.intro .mono{color:inherit;opacity:.8}
+.preview{text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease}
+.preview:hover{transform:translateY(-2px);border-color:var(--accent)}
+.preview .go{margin-top:auto;display:flex;justify-content:space-between;align-items:center;color:var(--accent);font-weight:600;font-size:.92rem}
+.peek{color:var(--muted);font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--surface-2);border-radius:999px;padding:4px 11px;font-size:.85rem}
+.tz{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
+.tz li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:.95rem}
+.tz li:last-child{border-bottom:0}
+.tz time{font-family:var(--font-mono);font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tz .home{font-weight:600}
+.stat{display:flex;gap:22px;flex-wrap:wrap}
+.stat div{display:flex;flex-direction:column}
+.stat b{font-family:var(--font-display);font-size:2rem;font-variant-numeric:tabular-nums;line-height:1}
+.kv{display:flex;flex-direction:column;gap:2px}
+.kv span:first-child{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.job-title{font-weight:600}
+.timeline-meta{color:var(--muted);font-size:.92rem}
+
+/* Carousel */
+.stage{perspective:1100px;height:clamp(300px,42vw,340px);position:relative;overflow:hidden;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);touch-action:pan-y;user-select:none}
+.ring{position:absolute;left:50%;top:50%;width:var(--cw);height:230px;margin-left:calc(var(--cw) / -2);margin-top:-115px;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.slide{position:absolute;inset:0;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:8px;backface-visibility:hidden;opacity:.55;transition:opacity .5s}
+.slide.active{opacity:1;border-color:var(--accent);background:var(--surface)}
+.slide h3{font-size:1.2rem}
+.slide p{font-size:.95rem;color:var(--muted)}
+.slide .tag{margin-top:auto}
+.ctrl{display:flex;align-items:center;gap:10px}
+.ctrl button{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);width:44px;height:44px;display:grid;place-items:center}
+.ctrl button:hover{border-color:var(--accent)}
+.pips{display:flex;gap:6px;margin-left:auto}
+.pips i{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.pips i.on{background:var(--pop)}
+
+/* Contact */
+.contact-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px dashed var(--border)}
+.contact-row:last-child{border-bottom:0}
+.contact-row .val{font-family:var(--font-mono);font-size:.95rem;overflow-wrap:anywhere;user-select:all}
+.copy{background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;min-width:76px}
+.copy:hover{border-color:var(--accent)}
+
+/* Phone */
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr);gap:16px}
+  .rail{position:static;flex-direction:row;align-items:center;justify-content:space-between;padding:14px 16px;gap:12px}
+  .rail-top{flex-direction:row;align-items:center;gap:12px}
+  .rail-top .status,.rail-meta,.rail-contact{display:none}
+  .mono-mark{width:44px;height:44px;border-radius:14px 14px 14px 4px;font-size:1.05rem}
+  .rail h1{font-size:1.2rem}
+  .role{font-size:.8rem}
+  .theme{margin:0;padding:8px 10px}
+  .theme .lbl{display:none}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;width:auto;max-width:none;border-radius:0;border-width:1px 0 0;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));justify-content:space-around;gap:2px;z-index:5;overflow:visible}
+  nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:.72rem;border-radius:12px}
+  nav.tabs button svg{display:block;width:22px;height:22px}
+  .main{padding-bottom:84px}
+  .bento{grid-template-columns:minmax(0,1fr)}
+  .bento>*,.bento>.wide{grid-column:auto}
+  .intro{padding:22px}
+  .card{padding:18px}
+}
+@media (prefers-reduced-motion: reduce){
+  .ring,.slide,.preview{transition:none}
+}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div class="app">
+  <aside class="rail">
+    <div class="rail-top">
+      <div class="mono-mark" aria-hidden="true">LV</div>
+      <div>
+        <h1>Loren Villas</h1>
+        <div class="role">Virtual assistant, admin and bookkeeping support</div>
+      </div>
+      <div class="status"><span class="dot"></span>Available for full-time remote work</div>
+    </div>
+    <div class="rail-meta">
+      <div class="kv"><span>Based in</span><span>Bacolod City, Philippines</span></div>
+      <div class="kv"><span>Time zones</span><span>US, UK and Australia</span></div>
+    </div>
+    <div class="rail-contact">
+      <div class="kv row"><span>Email</span><span>loren.villas.va@gmail.com</span></div>
+    </div>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <span class="lbl">Light / dark</span>
+    </button>
+  </aside>
+
+  <div class="main">
+    <nav class="tabs" id="tabs" aria-label="Sections">
+      <button type="button" data-view="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+      <button type="button" data-view="services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Services</button>
+      <button type="button" data-view="background"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3"/></svg>Background</button>
+      <button type="button" data-view="setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="16" height="11" rx="1"/><path d="M2 19h20"/></svg>Setup</button>
+      <button type="button" data-view="contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Contact</button>
+    </nav>
+
+    <!-- HOME -->
+    <section class="view" id="view-home">
+      <div class="bento">
+        <div class="card intro wide">
+          <span class="mono">Virtual assistant · Bacolod, Philippines</span>
+          <h2>Calendars, inboxes and records kept in order.</h2>
+          <p>I manage email and schedules, keep records accurate in Excel, answer customer questions, and handle bookkeeping basics in Xero. I work across US, UK and Australian time zones.</p>
+        </div>
+        <button class="card preview" type="button" data-go="services">
+          <span class="mono">Services</span>
+          <h3>What I can take off your plate</h3>
+          <div class="chips"><span class="chip">Calendar</span><span class="chip">Email</span><span class="chip">Data entry</span><span class="chip">Customer support</span><span class="chip">Bookkeeping basics</span><span class="chip">Research</span></div>
+          <span class="go">See the services <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="card preview" type="button" data-go="background">
+          <span class="mono">Background</span>
+          <h3>Experience and credentials</h3>
+          <p class="peek">Xero Level 1 (2026) · Bookkeeping Certificate, TESDA (2026) · BS Business Administration, Financial Management, expected 2027</p>
+          <span class="go">See my background <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="card preview" type="button" data-go="setup">
+          <span class="mono">Remote setup</span>
+          <h3>Ready for client calls</h3>
+          <p class="peek">Home Wi-Fi with a Smart hotspot backup, UPS with a 5-hour battery, noise-cancelling headset and HD webcam.</p>
+          <span class="go">See my setup <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="card preview" type="button" data-go="contact">
+          <span class="mono">Contact</span>
+          <h3>Say hello</h3>
+          <p class="peek">loren.villas.va@gmail.com<br>+63 920 296 8182</p>
+          <span class="go">Get in touch <span aria-hidden="true">→</span></span>
+        </button>
+        <div class="card">
+          <span class="mono">Time zones, live</span>
+          <ul class="tz" data-tz></ul>
+        </div>
+        <div class="card">
+          <span class="mono">Tools</span>
+          <h3>Day-to-day software</h3>
+          <div class="chips"><span class="chip">Google Workspace</span><span class="chip">Microsoft 365</span><span class="chip">Notion</span><span class="chip">Slack</span><span class="chip">Zoom</span><span class="chip">Google Meet</span><span class="chip">Canva</span><span class="chip">Grammarly</span><span class="chip">Xero</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="view" id="view-services" hidden>
+      <div class="view-head">
+        <span class="mono">Services</span>
+        <h2>What I can help with</h2>
+        <p>Use the arrows, swipe, or let it turn on its own.</p>
+      </div>
+      <div class="stage" id="stage" aria-roledescription="carousel" aria-label="Services">
+        <div class="ring" id="ring">
+          <article class="slide"><span class="mono tag">01 of 06</span><h3>Calendar and scheduling</h3><p>Appointments, schedules, tasks and deadlines kept in one calendar, with follow-up on anything still pending.</p></article>
+          <article class="slide"><span class="mono tag">02 of 06</span><h3>Email and inbox</h3><p>Email correspondence handled so communication stays clear and organised.</p></article>
+          <article class="slide"><span class="mono tag">03 of 06</span><h3>Data entry and records</h3><p>Accurate records and documents, with business information tracked and updated in Microsoft Excel.</p></article>
+          <article class="slide"><span class="mono tag">04 of 06</span><h3>Customer support</h3><p>Finding out what the customer needs, then resolving their questions, issues and concerns.</p></article>
+          <article class="slide"><span class="mono tag">05 of 06</span><h3>Bookkeeping basics</h3><p>Xero Level 1 certified, with a TESDA bookkeeping certificate and Excel for everyday records.</p></article>
+          <article class="slide"><span class="mono tag">06 of 06</span><h3>Online research</h3><p>Looking things up on the web and handing back what you need to decide.</p></article>
+        </div>
+      </div>
+      <div class="ctrl">
+        <button type="button" id="prev" aria-label="Previous service"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" id="next" aria-label="Next service"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <div class="pips" id="pips" aria-hidden="true"></div>
+      </div>
+      <div class="chips" aria-label="All services"><span class="chip">Calendar and scheduling</span><span class="chip">Email and inbox</span><span class="chip">Data entry and records</span><span class="chip">Customer support</span><span class="chip">Bookkeeping basics</span><span class="chip">Online research</span></div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="view" id="view-background" hidden>
+      <div class="view-head">
+        <span class="mono">Background</span>
+        <h2>Experience and credentials</h2>
+      </div>
+      <div class="grid">
+        <div class="card" style="grid-column:1/-1">
+          <span class="mono">Experience</span>
+          <h3>Operations and Administrative Assistant</h3>
+          <p class="timeline-meta">Family retail business, Philippines · part-time · ended Aug 2026</p>
+          <ul>
+            <li>Guided customers to the right products by assessing their needs, and resolved their issues and concerns.</li>
+            <li>Kept accurate business records and documents through consistent data entry and administrative support.</li>
+            <li>Tracked and updated business information in Microsoft Excel.</li>
+            <li>Managed email correspondence for the business, keeping communication clear and organised.</li>
+            <li>Coordinated calendars, schedules and tasks with Google Calendar while balancing work and school.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="mono">Certifications and training</span>
+          <ul>
+            <li>Xero Level 1 Certification, 2026</li>
+            <li>Bookkeeping Certificate, TESDA, 2026</li>
+            <li>Digital-Era Business Seminar, BMAP Region 6, 2024</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="mono">Education</span>
+          <h3>BS Business Administration</h3>
+          <p>Major in Financial Management</p>
+          <p class="timeline-meta">Aklan Catholic College · expected 2027</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETUP -->
+    <section class="view" id="view-setup" hidden>
+      <div class="view-head">
+        <span class="mono">Remote setup</span>
+        <h2>Ready for client calls</h2>
+        <p>What keeps me online and working when the weather or the power does not cooperate.</p>
+      </div>
+      <div class="grid">
+        <div class="card"><span class="mono">Internet</span><h3>Fast, with a backup</h3><p>Stable home Wi-Fi plus a Smart mobile hotspot.</p>
+          <div class="stat"><div><b>200</b><span class="peek">Mbps down</span></div><div><b>318</b><span class="peek">Mbps up</span></div><div><b>6</b><span class="peek">ms ping</span></div></div>
+          <span class="peek">Speedtest result from October 2026.</span></div>
+        <div class="card"><span class="mono">Power backup</span><h3>Works through outages</h3><p>UPS with a 5-hour battery, and a nearby coworking space if an outage runs longer.</p></div>
+        <div class="card"><span class="mono">Equipment</span><h3>Own gear</h3><p>Personal Lenovo IdeaPad 3 laptop, noise-cancelling headset and HD webcam.</p></div>
+        <div class="card"><span class="mono">Availability</span><h3>Flexible hours</h3><p>Flexible schedule, open to US, UK and Australian time zones, and open to a graveyard shift.</p></div>
+        <div class="card" style="grid-column:1/-1"><span class="mono">Time zones, live</span><ul class="tz" data-tz></ul></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="view" id="view-contact" hidden>
+      <div class="view-head">
+        <span class="mono">Contact</span>
+        <h2>Let's talk</h2>
+        <p>Email is the fastest way to reach me. I am glad to start with a paid trial.</p>
+      </div>
+      <div class="card">
+        <div class="contact-row"><div class="kv"><span>Email</span><span class="val">loren.villas.va@gmail.com</span></div><button class="copy" type="button" data-copy="loren.villas.va@gmail.com">Copy</button></div>
+        <div class="contact-row"><div class="kv"><span>Phone / WhatsApp</span><span class="val">+63 920 296 8182</span></div><button class="copy" type="button" data-copy="+639202968182">Copy</button></div>
+        <div class="contact-row"><div class="kv"><span>LinkedIn</span><a class="val" href="https://www.linkedin.com/in/loren-villas" target="_blank" rel="noopener">linkedin.com/in/loren-villas</a></div><button class="copy" type="button" data-copy="https://www.linkedin.com/in/loren-villas">Copy</button></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Animated contour background ---------- */
+  var cv=document.getElementById('bg'),ctx=cv.getContext('2d'),W=0,H=0,dpr=1,last=0,raf=0;
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+  function draw(t){
+    var rgb=(getComputedStyle(root).getPropertyValue('--contour-rgb')||'31,58,94').trim();
+    ctx.clearRect(0,0,W,H);ctx.lineWidth=1;
+    var L=34,k,x,y;
+    for(k=0;k<L;k++){
+      var base=(k/(L-1))*H*1.15-H*0.08;
+      ctx.beginPath();
+      for(x=0;x<=W+14;x+=14){
+        y=base+30*Math.sin(x*0.0048+k*0.33+t*0.0004)+16*Math.sin(x*0.011-k*0.21+t*0.0006)+10*Math.sin(x*0.002+k*0.5);
+        if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle='rgba('+rgb+','+(k%5===0?0.2:0.09)+')';
+      ctx.stroke();
+    }
+  }
+  function loop(ts){
+    raf=requestAnimationFrame(loop);
+    if(ts-last<33)return;last=ts;draw(ts);
+  }
+  function startBg(){
+    size();
+    if(reduce){draw(0);return}
+    if(!raf)raf=requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange',function(){
+    if(reduce)return;
+    if(document.hidden){cancelAnimationFrame(raf);raf=0}else if(!raf){raf=requestAnimationFrame(loop)}
+  });
+  window.addEventListener('resize',function(){size();if(reduce)draw(0);layout()});
+  startBg();
+
+  /* ---------- Theme toggle ---------- */
+  function effectiveTheme(){
+    var t=root.getAttribute('data-theme');
+    if(t)return t;
+    return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  }
+  document.getElementById('theme').addEventListener('click',function(){
+    root.setAttribute('data-theme',effectiveTheme()==='dark'?'light':'dark');
+    if(reduce)draw(0);
+  });
+
+  /* ---------- Views ---------- */
+  var views=['home','services','background','setup','contact'];
+  var tabs=document.querySelectorAll('#tabs button');
+  function show(id){
+    if(views.indexOf(id)<0)id='home';
+    views.forEach(function(v){document.getElementById('view-'+v).hidden=(v!==id)});
+    tabs.forEach(function(b){
+      if(b.getAttribute('data-view')===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+    });
+    if(id==='services'){layout();startAuto()}else{stopAuto()}
+    window.scrollTo(0,0);
+    try{if(location.hash.slice(1)!==id)history.replaceState(null,'','#'+id)}catch(e){}
+  }
+  tabs.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-view'))})});
+  document.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-go'))})});
+
+  /* ---------- 3D carousel ---------- */
+  var stage=document.getElementById('stage'),ring=document.getElementById('ring');
+  var slides=[].slice.call(ring.children),N=slides.length,step=360/N,rot=0,timer=0;
+  var pips=document.getElementById('pips');
+  slides.forEach(function(){pips.appendChild(document.createElement('i'))});
+  function cardWidth(){return Math.max(220,Math.min(300,stage.clientWidth-80))}
+  function layout(){
+    if(!stage.clientWidth)return;
+    var cw=cardWidth();
+    stage.style.setProperty('--cw',cw+'px');
+    var R=Math.round((cw/2)/Math.tan(Math.PI/N))+14;
+    slides.forEach(function(s,i){s.style.transform='rotateY('+(i*step)+'deg) translateZ('+R+'px)'});
+    ring.style.transform='translateZ('+(-R)+'px) rotateY('+(-rot)+'deg)';
+    var cur=((Math.round(rot/step)%N)+N)%N;
+    slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+    [].forEach.call(pips.children,function(p,i){p.classList.toggle('on',i===cur)});
+  }
+  function go(d){rot+=d*step;layout()}
+  function startAuto(){stopAuto();if(reduce)return;timer=setInterval(function(){go(1)},5000)}
+  function stopAuto(){if(timer){clearInterval(timer);timer=0}}
+  document.getElementById('next').addEventListener('click',function(){go(1);stopAuto()});
+  document.getElementById('prev').addEventListener('click',function(){go(-1);stopAuto()});
+  var sx=null;
+  stage.addEventListener('pointerdown',function(e){sx=e.clientX});
+  stage.addEventListener('pointerup',function(e){
+    if(sx===null)return;var dx=e.clientX-sx;sx=null;
+    if(Math.abs(dx)>40){go(dx<0?1:-1);stopAuto()}
+  });
+  stage.addEventListener('mouseenter',stopAuto);
+
+  /* ---------- Live time zones ---------- */
+  var zones=[['Bacolod (home base)','Asia/Manila'],['Sydney','Australia/Sydney'],['London','Europe/London'],['New York','America/New_York']];
+  function tick(){
+    var lists=document.querySelectorAll('[data-tz]'),now=new Date();
+    lists.forEach(function(ul){
+      var html='';
+      zones.forEach(function(z,i){
+        var txt;
+        try{txt=new Intl.DateTimeFormat('en-US',{timeZone:z[1],weekday:'short',hour:'numeric',minute:'2-digit'}).format(now)}catch(e){txt='-'}
+        html+='<li'+(i===0?' class="home"':'')+'><span>'+z[0]+'</span><time>'+txt+'</time></li>';
+      });
+      ul.innerHTML=html;
+    });
+  }
+  tick();setInterval(tick,30000);
+
+  /* ---------- Copy buttons ---------- */
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var text=b.getAttribute('data-copy');
+      function done(ok){b.textContent=ok?'Copied':'Select text';setTimeout(function(){b.textContent='Copy'},1600)}
+      function fallback(){
+        try{var r=document.createRange();r.selectNodeContents(b.parentNode.querySelector('.val'));var s=getSelection();s.removeAllRanges();s.addRange(r);done(false)}catch(e){done(false)}
+      }
+      try{navigator.clipboard.writeText(text).then(function(){done(true)},fallback)}catch(e){fallback()}
+    });
+  });
+
+  show((location.hash||'').slice(1)||'home');
+})();
+</script>
+</body>
+</html>
